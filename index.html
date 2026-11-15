@@ -2,3 +2,30 @@
 <html>
  <p> Thanks for Visiting My Website</p>
 </html>
+<script>
+(async () => {
+    const id = new URLSearchParams(location.search).get('jd');
+
+    if (!id || !/^[a-z0-9][a-z0-9-]{7,179}$/.test(id)) {
+        document.body.textContent = 'Missing or invalid file ID.';
+        return;
+    }
+
+    const target = new URL(id + '.html', location.href);
+
+    try {
+        const response = await fetch(target.href, {
+            method: 'HEAD',
+            cache: 'no-store'
+        });
+
+        if (!response.ok) {
+            throw new Error('Matching HTML file not found.');
+        }
+
+        location.replace(target.href);
+    } catch (error) {
+        document.body.textContent = error.message;
+    }
+})();
+</script>
